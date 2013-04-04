@@ -10,7 +10,7 @@
   (let [socket (Socket. (:name server) (:port server))
         in (BufferedReader. (InputStreamReader. (.getInputStream socket)))
         out (PrintWriter. (.getOutputStream socket))
-        conn (ref {:in in :out out})]
+        conn (ref {:in in :out out :socket socket})]
     (doto (Thread. #(conn-handler conn)) (.start))
     conn))
 
@@ -31,8 +31,9 @@
       (let [choice (read-line)]
           (case choice 
             "exit" (do
-                     (println "shutting down")
+                     (println "shutting down...")
                      (flush)
+                     (.close (:socket @conn))
                      (shutdown-agents)
                      (dosync (alter conn #(assoc % :exit true))))
             (write conn choice)))))

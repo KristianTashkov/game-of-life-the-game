@@ -6,7 +6,9 @@
 (defn -main [& args]
   (println "Server or Client (s/c)?")
   (flush)
-  (let [choice (read-line)]
+  (let [choice (if (empty? args)
+                 (read-line)
+                 (first args))]
     (cond 
       (= choice "s") (do
                        (start-server)
