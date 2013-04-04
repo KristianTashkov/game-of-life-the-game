@@ -10,18 +10,29 @@
    (println message)
    (flush)))
 
+(defn read-message
+  []
+  (let [message (try (let [msg (read-line)]
+                       (read-line)
+                       msg)
+                     (catch Exception e (logger-write "Socket faulted state.")))]
+    (if-not (nil? message)
+      (clojure.string/trim-newline message)
+      message)))
+
 (defn- client-callback [in out]
   (binding [*in* (reader in)
             *out* (writer out)
             *err* (writer System/err)]
-      (loop [input (clojure.string/trim-newline (read-line))]
-                (read-line)
+      (loop [input (read-message)]
+        (when-not (nil? input)
                 (logger-write input)
                 (if (= input "joke")
                   (println "Haha thats funny!")
                   (println (str "Why did you say " input " to me?!")))
                 (flush)
-                (recur (clojure.string/trim-newline (read-line)))))
-    (logger-write "Exiting..."))
+                (when-not (nil? *in*)
+                  (recur (read-message)))))
+    (logger-write "Client exiting...")))
 
-(defn start-server [] (create-server (Integer. 3333) client-callback))
+(defn start-server [server-info] (create-server (Integer. (:port server-info)) client-callback))
