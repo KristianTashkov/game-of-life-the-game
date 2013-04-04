@@ -23,18 +23,18 @@
   (flush)
   (future (while (nil? (:exit @conn))
             (binding [*in* (:in @conn)]
-            (let [msg (read-line)]
-              (println msg)
-              (flush)))))
+              (let [msg (read-line)]
+                (println msg)
+                (flush)))))
   (while (nil? (:exit @conn))
-      (let [choice (read-line)]
-          (case choice 
-            "exit" (do
-                     (println "shutting down...")
-                     (flush)
-                     (.close (:socket @conn))
-                     (shutdown-agents)
-                     (dosync (alter conn #(assoc % :exit true))))
-            (write conn choice)))))
+    (let [choice (read-line)]
+      (case choice
+        "exit" (do
+                 (println "shutting down...")
+                 (flush)
+                 (.close (:socket @conn))
+                 (shutdown-agents)
+                 (dosync (alter conn #(assoc % :exit true))))
+        (write conn choice)))))
 
 (defn start-connection [server-info] (connect server-info))

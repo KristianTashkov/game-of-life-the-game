@@ -11,11 +11,11 @@
   (let [choice (if (empty? args)
                  (read-line)
                  (first args))]
-    (cond 
+    (cond
       (= choice "s") (do
                        (start-server server-info)
                        (println "Server started succesfully"))
-      (= choice "c") (do 
+      (= choice "c") (do
                        (start-connection server-info)
                        (println "Connection established"))
       :else (recur []))))
