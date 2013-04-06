@@ -1,7 +1,7 @@
 (ns game.core
   (:gen-class)
-  (:use [game.client :only [start-connection]])
-  (:use [game.server :only [start-server]]))
+  (:use [game.connection.client :only [start-connection]])
+  (:use [game.connection.server :only [start-server]]))
 
 (def server-info {:name "localhost" :port 3333})
 

@@ -1,0 +1,14 @@
+Kris:
+-------------------------------------
+* Implement "conn" ref as dynamic or somehow global var so you don't pass it around everywhere
+* Fix caught exception logging when no message is needed
+* Maybe rework how we send headered message?
+
+Nikola:
+-------------------------------------
+* Implement basic game of life GUI in client
+* Implement game of life logic in server
+* Handle click events on board and start/stop button
+
+Other:
+Better framework for commands and sending messages?
