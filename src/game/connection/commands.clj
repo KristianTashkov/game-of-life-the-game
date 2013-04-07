@@ -1,30 +1,30 @@
 (ns game.connection.commands
-   (:use [game.connection.communication :only [write-message read-message]]))
+  (:use [game.connection.communication :only [write-message read-message *connection*]]))
 
 (defn send-command
-  [conn type command-body]
-  (write-message conn type)
+  [type command-body]
+  (write-message type)
   (command-body))
 
 ;; Client commands
 (defn command-client-message
-  [conn]
-  (let [msg (read-message conn)]
+  []
+  (let [msg (read-message)]
     (when msg
       (println msg))))
 
 ;; Server commands
 (defn command-server-message
-  [conn]
-  (let [msg (read-message conn)]
+  []
+  (let [msg (read-message)]
     (when msg
       (do
         (println msg)
         (if (= msg "joke")
-          (send-command conn "message" #(write-message conn "Thats a funny joke!"))
-          (send-command conn "message" #(write-message conn "Thats was so boring!")))))))
+          (send-command "message" #(write-message "Thats a funny joke!"))
+          (send-command "message" #(write-message "Thats was so boring!")))))))
 
 (defn command-server-exit
-  [conn]
-  (dosync 
-    (alter conn #(assoc % :exit true))))
+  []
+  (dosync
+    (alter *connection* assoc :alive false)))

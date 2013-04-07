@@ -1,6 +1,6 @@
 (ns game.connection.client
   (:use [game.connection.commands])
-  (:use [game.connection.communication :only [read-message write-message open-message-pump]])
+  (:use [game.connection.communication :only [read-message write-message open-message-pump *connection*]])
   (:use [clojure.java.io :only [reader writer]])
   (:import (java.net Socket)))
 
@@ -12,26 +12,27 @@
   (let [socket (Socket. (:name server) (:port server))
         in (reader (.getInputStream socket))
         out (writer (.getOutputStream socket))
-        conn (ref {:in in :out out :socket socket})]
+        conn (ref {:in in :out out :socket socket :alive true})]
     (doto (Thread. #(conn-handler conn)) (.start))
     conn))
 
 (defn conn-handler [conn]
-  (println "Available commands: \"say\",\"exit\"")
-  (open-message-pump conn client-commands-map)
-  (while (nil? (:exit @conn))
-    (let [choice (read-line)]
-      (case choice
-        "exit" (do
-                 (println "Shutting down...")
-                 (shutdown-agents)
-                 (send-command conn "exit" #())
-                 (.close (:socket @conn))
-                 (dosync (alter conn #(assoc % :exit true))))
-        "say" (send-command conn "message" #(write-message conn (read-line)))
-        (println "Wrong command!")))))
+  (binding [*connection* conn]
+    (open-message-pump client-commands-map)))
 
-(defn start-connection 
-  [server-info] 
-  (let [conn (connect server-info)]
-    (comment "Client code here (GUI)")))
+
+(defn start-connection
+  [server-info]
+  (binding [*connection* (connect server-info)]
+    (println "Available commands: \"say\",\"exit\"")
+    (while (:alive @*connection*)
+      (let [choice (read-line)]
+        (case choice
+          "exit" (do
+                   (println "Shutting down...")
+                   (shutdown-agents)
+                   (send-command "exit" #())
+                   (.close (:socket @*connection*))
+                   (dosync (alter *connection* assoc :alive false)))
+          "say" (send-command "message" #(write-message (read-line)))
+          (println "Wrong command!"))))))

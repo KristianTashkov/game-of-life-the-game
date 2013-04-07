@@ -12,10 +12,6 @@
                  (read-line)
                  (first args))]
     (cond
-      (= choice "s") (do
-                       (start-server server-info)
-                       (println "Server started succesfully"))
-      (= choice "c") (do
-                       (start-connection server-info)
-                       (println "Connection established"))
+      (= choice "s") (start-server server-info)
+      (= choice "c") (start-connection server-info)
       :else (recur []))))
