@@ -1,5 +1,5 @@
-(ns game.logic.main)
-(use `game.logic.basic_implementation)
+(ns game.logic.main
+  (:use [game.logic.basic_implementation]))
 
 (defn new-world
   []
@@ -21,3 +21,4 @@
   [world]
   (seq world))
 
+(next-generation (new-world))

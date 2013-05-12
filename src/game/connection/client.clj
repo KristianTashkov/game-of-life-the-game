@@ -6,7 +6,7 @@
 
 (declare conn-handler)
 
-(def client-commands-map {:message command-client-message})
+(def client-commands-map {:world-update command-client-world-update})
 
 (defn connect [server]
   (let [socket (Socket. (:name server) (:port server))
@@ -24,7 +24,7 @@
 (defn start-connection
   [server-info]
   (binding [*connection* (connect server-info)]
-    (println "Available commands: \"say\",\"exit\"")
+    (println "Available commands: \"play\",\"pause\" and \"change\"")
     (while (:alive @*connection*)
       (let [choice (read-line)]
         (case choice
@@ -34,5 +34,7 @@
                    (write-message {:type :exit})
                    (.close (:socket @*connection*))
                    (dosync (alter *connection* assoc :alive false)))
-          "say" (write-message {:type :message, :msg (read-line)})
+          "play" (write-message {:type :play-pause, :state true})
+          "pause" (write-message {:type :play-pause, :state false})
+          "change" (write-message {:type :change-cell, :cell (read-line) :state (read-line)})
           (println "Wrong command!"))))))

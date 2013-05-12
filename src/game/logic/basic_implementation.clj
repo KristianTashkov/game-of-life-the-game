@@ -1,7 +1,7 @@
 (ns game.logic.basic_implementation)
 ;; This is the game of life implementation from the "Clojure Programming" book.
 
-(defn empty-board [] #{})
+(defn empty-board [] #{[1 1] [0 0] [1 2] [2 3]})
 
 (defn stepper
   [neighbours birth? survive?]
