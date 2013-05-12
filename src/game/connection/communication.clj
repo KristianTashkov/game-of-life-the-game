@@ -1,12 +1,17 @@
 (ns game.connection.communication
-  (:use [cheshire.core :only (generate-string parse-string)]))
+  (:use [game.state.server_state]
+    [cheshire.core :only (generate-string parse-string)]))
 
 (def ^:dynamic *connection* (ref {:alive false}))
 
 (defn write-message [msg]
-  (binding [*out* (:out @*connection*)]
-    (when msg
-      (println (generate-string msg)))))
+  (try
+    (binding [*out* (:out @*connection*)]
+      (when msg
+        (println (generate-string msg))))
+    (catch Exception e (do
+                         (remove-client *connection*)
+                         (println "Socket faulted state.")))))
 
 (defn read-message
   []
@@ -15,7 +20,7 @@
       (when-let [message (read-line)]
         (clojure.string/trim-newline message))
       (catch Exception e (do
-                           (dosync (alter *connection* assoc :alive false))
+                           (remove-client *connection*)
                            (println "Socket faulted state."))))))
 
 (defn open-message-pump

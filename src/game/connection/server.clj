@@ -12,18 +12,15 @@
 
 (defn- client-callback [in out]
   (binding [*connection* (ref {:in (reader in) :out (writer out) :alive true :id (swap! current-id inc)})]
-    (println (str "Client #" (:id @*connection*) " connected."))
-    (dosync
-      (alter clients assoc (:id @*connection*) *connection*))
+    (add-client *connection*)
     (open-message-pump server-commands-map)
-    (dosync
-      (alter clients dissoc *connection*))
-    (println (str "Client #" (:id @*connection*) " disconnected."))))
+    (remove-client *connection*)))
 
 (defn start-server
   [server-info]
   (create-server (Integer. (:port server-info)) client-callback)
   (println "Server started!")
+  (reset! is-server true)
   (while true
     (when @server-playing
       (dosync
