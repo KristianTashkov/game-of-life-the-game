@@ -18,7 +18,7 @@
     (open-message-pump server-commands-map)
     (dosync
       (alter clients dissoc @*connection*))
-    (println (str "Client " (:id @*connection*) " disconnected."))))
+    (println (str "Client #" (:id @*connection*) " disconnected."))))
 
 (defn start-server
   [server-info]

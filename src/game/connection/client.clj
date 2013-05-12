@@ -31,8 +31,8 @@
           "exit" (do
                    (println "Shutting down...")
                    (shutdown-agents)
-                   (send-command "exit" #())
+                   (write-message {:type :exit})
                    (.close (:socket @*connection*))
                    (dosync (alter *connection* assoc :alive false)))
-          "say" (send-command "message" #(write-message (read-line)))
+          "say" (write-message {:type :message, :msg (read-line)})
           (println "Wrong command!"))))))
