@@ -1,5 +1,5 @@
 (ns game.connection.server
-  (:use [game.connection.commands]
+  (:use [game.logic.server_commands]
     [game.connection.communication :only [read-message write-message open-message-pump *connection*]]
     [game.logic.main]
     [game.state.server_state]

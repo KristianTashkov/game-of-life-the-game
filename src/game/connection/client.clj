@@ -1,5 +1,5 @@
 (ns game.connection.client
-  (:use [game.connection.commands])
+  (:use [game.logic.client_commands])
   (:use [game.connection.communication :only [read-message write-message open-message-pump *connection*]])
   (:use [clojure.java.io :only [reader writer]])
   (:import (java.net Socket)))

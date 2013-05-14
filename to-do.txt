@@ -1,7 +1,5 @@
 Kris:
 -------------------------------------
-* Separate server and client commands.
-* Play Minecraft
 
 Nikola:
 -------------------------------------

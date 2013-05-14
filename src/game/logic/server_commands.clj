@@ -1,6 +1,5 @@
-(ns game.connection.commands
+(ns game.logic.server_commands
   (:use [game.state.server_state]
-    [game.state.client_state]
     [game.logic.main]
     [game.connection.communication :only [write-message read-message *connection*]]
     [cheshire.core :only (generate-string parse-string)]))
@@ -12,16 +11,6 @@
     (doseq [client @clients]
       (binding [*connection* (val client)]
         (write-message {:type :world-update, :world living})))))
-
-;; Client commands
-
-(defn command-client-world-update
-  [{:keys [world]}]
-  (dosync
-    (ref-set client-board world)
-    (println world)))
-
-;; Server commands
 
 (defn command-server-change-cell
   [{:keys [cell state] :as args}]
@@ -38,4 +27,4 @@
   [{:keys [state] :as args}]
   (dosync
     (ref-set server-playing state))
-  (println (if state "Playing.." "Paused")))
+  (println (if state "Playing.." "Paused..")))
