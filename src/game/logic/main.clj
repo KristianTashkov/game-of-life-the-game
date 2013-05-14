@@ -9,6 +9,11 @@
   [world]
   (step world))
 
+(defn alive?
+  [world cell]
+  (world cell))
+
+
 (defn living-cells
   [world]
   (seq world))

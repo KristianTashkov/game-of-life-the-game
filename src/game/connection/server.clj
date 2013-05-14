@@ -1,6 +1,6 @@
 (ns game.connection.server
   (:use [game.logic.server_commands]
-    [game.connection.communication :only [read-message write-message open-message-pump *connection*]]
+    [game.connection.communication :only [read-message write-message open-message-pump]]
     [game.logic.main]
     [game.state.server_state]
     [clojure.java.io :only [reader writer]]
@@ -11,10 +11,12 @@
                           :change-cell command-server-change-cell})
 
 (defn- client-callback [in out]
-  (binding [*connection* (ref {:in (reader in) :out (writer out) :alive true :id (swap! current-id inc)})]
-    (add-client *connection*)
-    (open-message-pump server-commands-map)
-    (remove-client *connection*)))
+  (let [connection (ref {:in (reader in) :out (writer out) :alive true :id (swap! current-id inc)})]
+    (add-client connection)
+    (write-message connection {:type :world-update, :world @server-board})
+    (write-message connection {:type :playing-changed, :state @server-playing})
+    (open-message-pump server-commands-map connection)
+    (remove-client connection)))
 
 (defn start-server
   [server-info]
