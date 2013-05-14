@@ -18,7 +18,7 @@
   (binding [*in* (:in @*connection*)]
     (try
       (when-let [message (read-line)]
-        (clojure.string/trim-newline message))
+        (-> message clojure.string/trim-newline (parse-string true)))
       (catch Exception e (do
                            (remove-client *connection*)
                            (println "Socket faulted state."))))))
@@ -26,6 +26,6 @@
 (defn open-message-pump
   [commands]
   (while (:alive @*connection*)
-    (when-let [msg (parse-string (read-message) true)]
+    (when-let [msg (read-message)]
       (when-let [command ((keyword (:type msg)) commands)]
         (command msg)))))
