@@ -5,8 +5,8 @@
 (defn command-client-world-update
   [{:keys [world]}]
   (dosync
-    (ref-set client-board (set world))
-    (redisplay the-frame)))
+    (ref-set client-board (set world)))
+  (redisplay the-frame))
 
 (defn command-client-playing-changed
   [{:keys [state]}]

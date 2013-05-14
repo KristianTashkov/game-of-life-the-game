@@ -1,8 +1,10 @@
 Kris:
 -------------------------------------
+* Rework the whole connection variable mainly in client
 
 Nikola:
 -------------------------------------
-* Implement basic game of life GUI in client
-* Handle click events on board and start/stop button
+* Better UI, more stuff in UI
+* Rework and refactor code that seems stupid.
 
+P.S. Sorry for stealing your work, I was bored :/

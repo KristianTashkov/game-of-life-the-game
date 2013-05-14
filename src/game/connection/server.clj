@@ -28,4 +28,4 @@
       (dosync
         (alter server-board next-generation)
         (update-board-clients))
-      (Thread/sleep 1000))))
+      (Thread/sleep 200))))
