@@ -25,9 +25,14 @@
     (update-board-clients)))
 
 (defn command-server-exit
-  [args])
-  ;(dosync
-    ;(alter connection assoc :alive false)))
+  [{:keys [connection] :as args}]
+  (dosync
+    (alter connection assoc :alive false))
+  (write-message connection {:type :pong}))
+
+(defn command-server-ping
+  [{:keys [connection] :as args}]
+  (write-message connection {:type :pong}))
 
 (defn command-server-play-pause
   [{:keys [state] :as args}]

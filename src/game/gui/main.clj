@@ -45,21 +45,21 @@
 (defn redisplay [root]
   (config! (select root [:.world])   :paint draw-world))
 
-(defn add-behaviors [root connection]
+(defn add-behaviors [root]
   (listen (select root [:.world]) :mouse-clicked (fn [e]
                                                    (let [cell (cell-from (.getPoint e))]
-                                                     (write-message connection {:type :change-cell,
-                                                                                :cell cell
-                                                                                :state (not (alive? @client-board cell))}))))
+                                                     (write-message server-connection {:type :change-cell,
+                                                                                       :cell cell
+                                                                                       :state (not (alive? @client-board cell))}))))
   (listen (select root [:.play-pause])  :mouse-clicked (fn [e] (if @client-playing
-                                                                 (write-message connection {:type :play-pause, :state false})
-                                                                 (write-message connection {:type :play-pause, :state true})))))
+                                                                 (write-message server-connection {:type :play-pause, :state false})
+                                                                 (write-message server-connection {:type :play-pause, :state true})))))
 
 (defonce the-frame (make-frame))
 
-(defn start-game [connection]
+(defn start-game []
   (native!)
   (config! the-frame :content (make-panel))
   (show! the-frame)
-  (add-behaviors the-frame connection)
+  (add-behaviors the-frame)
   (redisplay the-frame))

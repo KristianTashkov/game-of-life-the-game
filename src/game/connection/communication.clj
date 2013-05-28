@@ -28,4 +28,4 @@
   (while (:alive @connection)
     (when-let [msg (read-message connection)]
       (when-let [command ((keyword (:type msg)) commands)]
-        (command msg)))))
+        (command (assoc msg :connection connection))))))

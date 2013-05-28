@@ -1,6 +1,5 @@
 Kris:
 -------------------------------------
-* Rework the whole connection variable mainly in client
 
 Nikola:
 -------------------------------------

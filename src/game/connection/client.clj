@@ -1,4 +1,5 @@
 (ns game.connection.client
+  (:use [game.state.client_state])
   (:use [game.gui.main])
   (:use [game.logic.client_commands])
   (:use [game.connection.communication :only [read-message write-message open-message-pump]])
@@ -25,7 +26,8 @@
 (defn start-connection
   [server-info]
   (let [connection (connect server-info)]
-    (start-game connection)
+    (alter-var-root (var server-connection) (fn [x] connection))
+    (start-game)
     (println "Available commands: \"play\",\"pause\" and \"change\"")
     (while (:alive @connection)
       (let [choice (read-line)]
